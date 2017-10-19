@@ -164,6 +164,11 @@ public class SceneToGlTFWiz : MonoBehaviour
 		List<Transform> bones = new List<Transform>();
 		foreach(Transform tr in trs)
 		{
+			if(tr.GetComponent<Licenser>())
+			{
+				GlTF_Writer.exportedFiles.Add(AssetDatabase.GetAssetPath(tr.GetComponent<Licenser>().license), "");
+			}
+
 			if (!tr.gameObject.activeSelf)
 				continue;
 
@@ -594,6 +599,8 @@ public class SceneToGlTFWiz : MonoBehaviour
 			// Remove all files
 			foreach (string pa in GlTF_Writer.exportedFiles.Keys)
 			{
+				if (pa.Contains("LICENSE"))
+					continue;
 				if (System.IO.File.Exists(pa))
 					System.IO.File.Delete(pa);
 			}

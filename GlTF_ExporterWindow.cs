@@ -19,13 +19,13 @@ public class GlTFExporterWindow : EditorWindow
 	static UnityEngine.TextAsset presetAsset;
 	GameObject exporterGo;
 	SceneToGlTFWiz exporter;
-	bool buildZip = false;
-	bool convertImages = false;
+	bool buildZip = true;
+	bool convertImages = true;
 	bool exportAnimation = true;
 
 	//EditorPrefs.SetString(KEY_PATH, savedPath);
 	//EditorPrefs.SetString(KEY_FILE, savedFile);
-	//[MenuItem("Tools/Export to glTF")]
+	[MenuItem("Tools/Export to glTF %_f")]
 	static void CreateWizard()
 	{
 		savedPath = EditorPrefs.GetString(KEY_PATH, "/");
@@ -79,6 +79,7 @@ public class GlTFExporterWindow : EditorWindow
 	void ExportFile() // Create (Export) button has been hit (NOT wizard has been created!)
 	{
 		var ext = GlTF_Writer.binary ? "glb" : "gltf";
+		savedFile = Selection.GetTransforms(SelectionMode.TopLevel)[0].name + ".gltf";
 		path = EditorUtility.SaveFilePanel("Save glTF file as", savedPath, savedFile, ext);
 		if (path.Length != 0)
 		{

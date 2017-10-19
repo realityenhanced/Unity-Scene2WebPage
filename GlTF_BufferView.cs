@@ -5,11 +5,18 @@ using System.IO;
 using System;
 
 public class GlTF_BufferView : GlTF_Writer  {
+
+	public enum TARGET
+	{
+		ARRAY=34962,
+		ELEMENT=34963
+	}
+
 	public int bufferIndex = 0;// ": "duck",
 	public long byteLength;//": 25272,
 	public long byteOffset;//": 0,
 	public long byteStride;
-	public int target = 34962;
+	public int target= -1;
 	//	public string target = "ARRAY_BUFFER";
 	public int currentOffset = 0;
 	public MemoryStream memoryStream = new MemoryStream();
@@ -91,13 +98,18 @@ public class GlTF_BufferView : GlTF_Writer  {
 		//var binName = binary ? "binary_glTF" : Path.GetFileNameWithoutExtension(GlTF_Writer.binFileName);
 		Indent();		jsonWriter.Write ("\"buffer\": " + bufferIndex +",\n");
 		Indent();		jsonWriter.Write ("\"byteLength\": " + byteLength + ",\n");
-		Indent();		jsonWriter.Write ("\"byteOffset\": " + byteOffset + ",\n");
-		if(byteStride >= 4)
+		if ((int)target != (int)-1)
+		{
+			Indent(); jsonWriter.Write("\"target\": " + target + ",\n");
+		}
+
+		if (byteStride >= 4)
 		{
 			Indent(); jsonWriter.Write("\"byteStride\": " + byteStride + ",\n");
 		}
 
-		Indent();		jsonWriter.Write ("\"target\": " + target + "\n");
+		Indent();		jsonWriter.Write ("\"byteOffset\": " + byteOffset + "\n");
+
 		IndentOut();
 		Indent();		jsonWriter.Write ("}");
 	}

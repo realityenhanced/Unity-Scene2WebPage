@@ -76,7 +76,7 @@ public class GlTF_Animation : GlTF_Writer {
 
 				GlTF_AnimSampler sTranslation = new GlTF_AnimSampler(timeAccessorIndex, GlTF_Writer.accessors.Count);
 				GlTF_Accessor translationAccessor = new GlTF_Accessor(targetId + "_TranslationAccessor_" + clip.name, GlTF_Accessor.Type.VEC3, GlTF_Accessor.ComponentType.FLOAT);
-				translationAccessor.bufferView = GlTF_Writer.vec3BufferView;
+				translationAccessor.bufferView = GlTF_Writer.vec3BufferViewAnim;
 				GlTF_Writer.accessors.Add(translationAccessor);
 				animSamplers.Add(sTranslation);
 
@@ -90,7 +90,7 @@ public class GlTF_Animation : GlTF_Writer {
 
 				GlTF_AnimSampler sRotation = new GlTF_AnimSampler(timeAccessorIndex, GlTF_Writer.accessors.Count);
 				GlTF_Accessor rotationAccessor = new GlTF_Accessor(targetId + "_RotationAccessor_" + clip.name, GlTF_Accessor.Type.VEC4, GlTF_Accessor.ComponentType.FLOAT);
-				rotationAccessor.bufferView = GlTF_Writer.vec4BufferView;
+				rotationAccessor.bufferView = GlTF_Writer.vec4BufferViewAnim;
 				GlTF_Writer.accessors.Add(rotationAccessor);
 				animSamplers.Add(sRotation);
 
@@ -104,7 +104,7 @@ public class GlTF_Animation : GlTF_Writer {
 
 				GlTF_AnimSampler sScale = new GlTF_AnimSampler(timeAccessorIndex, GlTF_Writer.accessors.Count);
 				GlTF_Accessor scaleAccessor = new GlTF_Accessor(targetId + "_ScaleAccessor_" + clip.name, GlTF_Accessor.Type.VEC3, GlTF_Accessor.ComponentType.FLOAT);
-				scaleAccessor.bufferView = GlTF_Writer.vec3BufferView;
+				scaleAccessor.bufferView = GlTF_Writer.vec3BufferViewAnim;
 				GlTF_Writer.accessors.Add(scaleAccessor);
 				animSamplers.Add(sScale);
 

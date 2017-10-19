@@ -56,6 +56,16 @@ public class GlTF_BufferView : GlTF_Writer  {
 		byteLength = currentOffset;
 	}
 
+	public void PopulateShort(ushort vs)
+	{
+
+				ushort u = (ushort)vs;
+				memoryStream.Write(BitConverter.GetBytes(u), 0, BitConverter.GetBytes(u).Length);
+				currentOffset += 2;
+
+			byteLength += 2 ;
+	}
+
 	public void Populate (float[] vs)
 	{
 		for (int i = 0; i < vs.Length; i++)

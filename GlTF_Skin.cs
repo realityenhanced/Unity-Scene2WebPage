@@ -42,9 +42,9 @@ public class GlTF_Skin : GlTF_Writer {
 		rightToLeftHanded.SetRow(2, new Vector4(0, 0, -1, 0));
 		rightToLeftHanded.SetRow(3, new Vector4(0, 0, 0, 1));
 
+		rootBone = rebuildBoneHierarchy(skinMesh, ref joints);
 		Matrix4x4[] invBindMatrices = new Matrix4x4[joints.Count];
-
-		for (int i = 0; i < invBindMatrices.Length; ++i)
+		for (int i = 0; i < skinMesh.bones.Length; ++i)
 		{
 			// Generates inverseWorldMatrix in right-handed coordinate system
 			// Manually converts world translation and rotation from left to right handed coordinates systems
@@ -53,6 +53,13 @@ public class GlTF_Skin : GlTF_Writer {
 			convertQuatLeftToRightHandedness(ref rot);
 			convertVector3LeftToRightHandedness(ref pos);
 			invBindMatrices[i] = rightToLeftHanded.inverse * skinMesh.sharedMesh.bindposes[i] * rightToLeftHanded;// Matrix4x4.TRS(pos, rot, joints[i].lossyScale).inverse * sceneRootMatrix.inverse;
+		}
+		
+	
+		for (int i = skinMesh.bones.Length; i < joints.Count; ++i)
+		{
+			Debug.Log("Added bone '" + joints[i].name + "' to skeleton");
+			invBindMatrices[i] = Matrix4x4.identity;
 		}
 
 		invBindMatricesAccessor.Populate(invBindMatrices, m);
@@ -166,11 +173,13 @@ public class GlTF_Skin : GlTF_Writer {
 		IndentOut();
 		jsonWriter.WriteLine();
 		Indent(); jsonWriter.Write ("],\n");
-		Indent(); jsonWriter.Write("\"name\": \"" + name + "\"\n");
-		if(rootBone && GlTF_Writer.nodeNames.IndexOf(GlTF_Node.GetNameFromObject(rootBone)) != -1)
+		if (rootBone && GlTF_Writer.nodeNames.IndexOf(GlTF_Node.GetNameFromObject(rootBone)) != -1)
 		{
-			Indent(); jsonWriter.Write("\"skeleton\": " + GlTF_Writer.nodeNames.IndexOf(GlTF_Node.GetNameFromObject(rootBone)) + "\n");
+			Indent(); jsonWriter.Write("\"skeleton\": " + GlTF_Writer.nodeNames.IndexOf(GlTF_Node.GetNameFromObject(rootBone)) + ",\n");
 		}
+
+		Indent(); jsonWriter.Write("\"name\": \"" + name + "\"\n");
+
 		IndentOut();
 		Indent();	jsonWriter.Write ("}");
 	}

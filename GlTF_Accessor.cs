@@ -178,6 +178,37 @@ public class GlTF_Accessor : GlTF_Writer {
 		}
 	}
 
+	public void PopulateShort(Vector4[] v4s, bool noConvert = true, bool useUInt = false)
+	{
+		if (type != Type.VEC4)
+			throw (new System.Exception());
+
+		byteOffset = bufferView.currentOffset;
+
+		count = v4s.Length;
+		if (count > 0)
+		{
+			InitMinMaxFloat();
+			for (int i = 0; i < v4s.Length; i++)
+			{
+				bufferView.PopulateShort((ushort)v4s[i].x);
+				bufferView.PopulateShort((ushort)v4s[i].y);
+				bufferView.PopulateShort((ushort)v4s[i].z);
+				bufferView.PopulateShort((ushort)v4s[i].w);
+
+				minFloat.x = Mathf.Min(v4s[i].x, minFloat.x);
+				minFloat.y = Mathf.Min(v4s[i].y, minFloat.y);
+				minFloat.z = Mathf.Min(v4s[i].z, minFloat.z);
+				minFloat.w = Mathf.Min(v4s[i].w, minFloat.w);
+				maxFloat.x = Mathf.Max(v4s[i].x, maxFloat.x);
+				maxFloat.y = Mathf.Max(v4s[i].y, maxFloat.y);
+				maxFloat.z = Mathf.Max(v4s[i].z, maxFloat.z);
+				maxFloat.w = Mathf.Max(v4s[i].w, maxFloat.w);
+			}
+		}
+
+	}
+
 	public void Populate (Vector4[] v4s, bool noConvert = true, bool useUInt = false)
 	{
 		if (type != Type.VEC4)

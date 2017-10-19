@@ -36,9 +36,11 @@ public class GlTF_Skin : GlTF_Writer {
 			joints.Add(t);
 		}
 
-		// glTF expects a single hierarchy of bones, but Unity skips all the nodes that are not used.
-		// Find the common ancestor of all used bones in order to get a valid bone herarchy
-		rootBone = rebuildBoneHierarchy(skinMesh, ref joints);
+		Matrix4x4 rightToLeftHanded = new Matrix4x4();
+		rightToLeftHanded.SetRow(0, new Vector4(1, 0, 0, 0));
+		rightToLeftHanded.SetRow(1, new Vector4(0, 1, 0, 0));
+		rightToLeftHanded.SetRow(2, new Vector4(0, 0, -1, 0));
+		rightToLeftHanded.SetRow(3, new Vector4(0, 0, 0, 1));
 
 		Matrix4x4[] invBindMatrices = new Matrix4x4[joints.Count];
 
@@ -50,8 +52,7 @@ public class GlTF_Skin : GlTF_Writer {
 			Quaternion rot = joints[i].rotation;
 			convertQuatLeftToRightHandedness(ref rot);
 			convertVector3LeftToRightHandedness(ref pos);
-
-			invBindMatrices[i] = Matrix4x4.TRS(pos, rot, joints[i].lossyScale).inverse * sceneRootMatrix.inverse;
+			invBindMatrices[i] = rightToLeftHanded.inverse * skinMesh.sharedMesh.bindposes[i] * rightToLeftHanded;// Matrix4x4.TRS(pos, rot, joints[i].lossyScale).inverse * sceneRootMatrix.inverse;
 		}
 
 		invBindMatricesAccessor.Populate(invBindMatrices, m);
@@ -165,8 +166,11 @@ public class GlTF_Skin : GlTF_Writer {
 		IndentOut();
 		jsonWriter.WriteLine();
 		Indent(); jsonWriter.Write ("],\n");
-		Indent(); jsonWriter.Write("\"name\": \"" + name + "\",\n");
-		Indent(); jsonWriter.Write("\"skeleton\": " + GlTF_Writer.nodeNames.IndexOf(GlTF_Node.GetNameFromObject(rootBone)) + "\n");
+		Indent(); jsonWriter.Write("\"name\": \"" + name + "\"\n");
+		if(rootBone && GlTF_Writer.nodeNames.IndexOf(GlTF_Node.GetNameFromObject(rootBone)) != -1)
+		{
+			Indent(); jsonWriter.Write("\"skeleton\": " + GlTF_Writer.nodeNames.IndexOf(GlTF_Node.GetNameFromObject(rootBone)) + "\n");
+		}
 		IndentOut();
 		Indent();	jsonWriter.Write ("}");
 	}

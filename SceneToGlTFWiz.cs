@@ -432,34 +432,34 @@ public class SceneToGlTFWiz : MonoBehaviour
 				// (Unity skinning directly uses mesh to deform it, and doesn't care about transform anymore)
 				// Baking allow to take the current transform into account.
 				// FIXME: could also avoid baking and use the mesh directly and reset the transform
-				if (exportAnimation && skin)
-				{
-					baked = new Mesh();
-					skin.BakeMesh(baked);
-					baked.uv = m.uv;
-					baked.uv2 = m.uv2;
-					baked.uv3 = m.uv3;
-					baked.uv4 = m.uv4;
+				//if (exportAnimation && skin)
+				//{
+				//	baked = new Mesh();
+				//	skin.BakeMesh(baked);
+				//	baked.uv = m.uv;
+				//	baked.uv2 = m.uv2;
+				//	baked.uv3 = m.uv3;
+				//	baked.uv4 = m.uv4;
 
-					baked.bindposes = m.bindposes;
-					baked.boneWeights = m.boneWeights;
+				//	baked.bindposes = m.bindposes;
+				//	baked.boneWeights = m.boneWeights;
 
-					Matrix4x4 correction = Matrix4x4.TRS(tr.localPosition, tr.localRotation, tr.lossyScale).inverse * Matrix4x4.TRS(tr.localPosition, tr.localRotation, Vector3.one);
-					if(!correction.isIdentity)
-					{
-						Vector3[] verts = baked.vertices;
-						Vector3[] norms = baked.normals;
-						for (int i = 0; i < verts.Length; ++i)
-						{
-							verts[i] = correction.MultiplyPoint3x4(verts[i]);
-							norms[i] = correction.MultiplyVector(norms[i]);
-							norms[i].Normalize();
-						}
-						baked.vertices = verts;
-						baked.normals = norms;
-						baked.RecalculateBounds();
-					}
-				}
+				//	Matrix4x4 correction = Matrix4x4.TRS(tr.localPosition, tr.localRotation, tr.lossyScale).inverse * Matrix4x4.TRS(tr.localPosition, tr.localRotation, Vector3.one);
+				//	if(!correction.isIdentity)
+				//	{
+				//		Vector3[] verts = baked.vertices;
+				//		Vector3[] norms = baked.normals;
+				//		for (int i = 0; i < verts.Length; ++i)
+				//		{
+				//			verts[i] = correction.MultiplyPoint3x4(verts[i]);
+				//			norms[i] = correction.MultiplyVector(norms[i]);
+				//			norms[i].Normalize();
+				//		}
+				//		baked.vertices = verts;
+				//		baked.normals = norms;
+				//		baked.RecalculateBounds();
+				//	}
+				//}
 
 				mesh.Populate(baked);
 				GlTF_Writer.meshes.Add(mesh);

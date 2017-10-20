@@ -42,7 +42,7 @@ public class GlTF_Skin : GlTF_Writer {
 		rightToLeftHanded.SetRow(2, new Vector4(0, 0, -1, 0));
 		rightToLeftHanded.SetRow(3, new Vector4(0, 0, 0, 1));
 
-		rootBone = rebuildBoneHierarchy(skinMesh, ref joints);
+		//rootBone = rebuildBoneHierarchy(skinMesh, ref joints);
 		Matrix4x4[] invBindMatrices = new Matrix4x4[joints.Count];
 		for (int i = 0; i < skinMesh.bones.Length; ++i)
 		{
@@ -53,14 +53,16 @@ public class GlTF_Skin : GlTF_Writer {
 			convertQuatLeftToRightHandedness(ref rot);
 			convertVector3LeftToRightHandedness(ref pos);
 			invBindMatrices[i] = rightToLeftHanded.inverse * skinMesh.sharedMesh.bindposes[i] * rightToLeftHanded;// Matrix4x4.TRS(pos, rot, joints[i].lossyScale).inverse * sceneRootMatrix.inverse;
+			Debug.Log("Stored matrix for bone " + joints[i].name);
+			Debug.Log(invBindMatrices[i]);
 		}
 		
 	
-		for (int i = skinMesh.bones.Length; i < joints.Count; ++i)
-		{
-			Debug.Log("Added bone '" + joints[i].name + "' to skeleton");
-			invBindMatrices[i] = Matrix4x4.identity;
-		}
+		//for (int i = skinMesh.bones.Length; i < joints.Count; ++i)
+		//{
+		//	Debug.Log("Added bone '" + joints[i].name + "' to skeleton");
+		//	invBindMatrices[i] = Matrix4x4.identity;
+		//}
 
 		invBindMatricesAccessor.Populate(invBindMatrices, m);
 		invBindMatricesAccessorIndex = invBindAccessorIndex;

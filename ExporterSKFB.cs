@@ -1,4 +1,6 @@
 ﻿#if UNITY_EDITOR
+#define BUILD_SCENE2WEBPAGE
+
 using UnityEngine;
 using UnityEditor;
 using System.Collections;
@@ -19,11 +21,39 @@ public enum ExporterState
 	CHECK_VERSION
 }
 
-
 public class ExporterSKFB : EditorWindow {
 
-	[MenuItem("Tools/Publish to Sketchfab")]
-	static void Init()
+#if BUILD_SCENE2WEBPAGE
+    public static void ShowExplorer(string itemPath)
+    {
+        itemPath = itemPath.Replace(@"/", @"\");   // explorer doesn't like front slashes
+        System.Diagnostics.Process.Start("explorer.exe", "/select," + itemPath);
+    }
+
+    [MenuItem("Tools/Convert Scene to Web page")]
+    static void Init()
+    {
+#if UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX // edit: added Platform Dependent Compilation - win or osx standalone
+        var zipPath = Application.temporaryCachePath + "/" + "Unity2Skfb.zip";
+        var exportPath = Application.temporaryCachePath + "/" + "Unity2Skfb.gltf";
+        if (System.IO.File.Exists(zipPath))
+        {
+            System.IO.File.Delete(zipPath);
+        }
+
+        var exporter = new SceneToGlTFWiz();
+        exporter.Export(exportPath, null, /*buildzip*/ false, true, true, true);
+
+        ShowExplorer(exportPath);
+#else // and error dialog if not standalone
+		EditorUtility.DisplayDialog("Error", "Your build target must be set to standalone", "Okay");
+#endif
+    }
+
+#else
+
+    [MenuItem("Tools/Publish to Sketchfab")]
+    static void Init()
 	{
 #if UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX // edit: added Platform Dependent Compilation - win or osx standalone
 		ExporterSKFB window = (ExporterSKFB)EditorWindow.GetWindow(typeof(ExporterSKFB));
@@ -33,6 +63,8 @@ public class ExporterSKFB : EditorWindow {
 		EditorUtility.DisplayDialog("Error", "Your build target must be set to standalone", "Okay");
 #endif
 	}
+
+#endif
 
 	// Static data
 	public static string skfbUrl = "https://sketchfab.com/";
@@ -122,9 +154,14 @@ public class ExporterSKFB : EditorWindow {
 
 		exporterGo = new GameObject("Exporter");
 		publisher = exporterGo.AddComponent<ExporterScript>();
-		exporter = exporterGo.AddComponent<SceneToGlTFWiz>();
-		//FIXME: Make sure that object is deleted;
-		exporterGo.hideFlags = HideFlags.HideAndDontSave;
+
+#if BUILD_SCENE2WEBPAGE
+        exporter = new SceneToGlTFWiz(); 
+#else
+        exporterGo.AddComponent<SceneToGlTFWiz>();
+#endif
+        //FIXME: Make sure that object is deleted;
+        exporterGo.hideFlags = HideFlags.HideAndDontSave;
 		//publisher.getCategories();
 		resizeWindow(loginSize);
 		publisher.checkVersion();
@@ -360,7 +397,12 @@ public class ExporterSKFB : EditorWindow {
 		return true;
 	}
 
-	void OnGUI()
+#if BUILD_SCENE2WEBPAGE
+    void OnGUI()
+    {
+    }
+#else
+    void OnGUI()
 	{
 		if(exporterLabel == null)
 		{
@@ -570,8 +612,8 @@ public class ExporterSKFB : EditorWindow {
 							System.IO.File.Delete(zipPath);
 						}
 
-						exporter.ExportCoroutine(exportPath, null, true, true, opt_exportAnimation, true);
-
+                        exporter.ExportCoroutine(exportPath, null, true, true, opt_exportAnimation, true);
+                        
 						if (File.Exists(zipPath))
 						{
 							publisher.setFilePath(zipPath);
@@ -589,6 +631,7 @@ public class ExporterSKFB : EditorWindow {
 			}
 		}
 	}
+#endif
 
 	private Dictionary<string, string> buildParameterDict()
 	{

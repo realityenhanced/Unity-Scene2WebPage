@@ -1,4 +1,5 @@
 ﻿#if UNITY_EDITOR
+#define BUILD_SCENE2WEBPAGE
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -57,12 +58,20 @@ public class GlTFExporterWindow : EditorWindow
 		if (!exporterGo)
 		{
 			exporterGo = new GameObject("exporter");
-		}
-		if(!exporter)
+        }
+
+#if BUILD_SCENE2WEBPAGE
+        if (exporter == null)
+        {
+            exporter = new SceneToGlTFWiz();
+        }
+#else
+        if(!exporter)
 		{
 			exporter = exporterGo.AddComponent<SceneToGlTFWiz>();
 		}
-		GUI.enabled = (Selection.GetTransforms(SelectionMode.Deep).Length > 0);
+#endif
+        GUI.enabled = (Selection.GetTransforms(SelectionMode.Deep).Length > 0);
 		if (GUILayout.Button("Export to glTF"))
 		{
 			ExportFile();

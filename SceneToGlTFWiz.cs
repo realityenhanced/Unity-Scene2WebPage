@@ -5,6 +5,8 @@ GlamExport
 
 ****************************************************************************/
 #if UNITY_EDITOR
+#define BUILD_SCENE2WEBPAGE
+
 using UnityEngine;
 using UnityEditor;
 using System;
@@ -15,6 +17,7 @@ using System.IO.Compression;
 using System.Text;
 using System.Reflection;
 using Ionic.Zip;
+using UnityEngine.SceneManagement;
 
 public enum IMAGETYPE
 {
@@ -31,7 +34,11 @@ public enum IMAGETYPE
 	IGNORE
 }
 
+#if BUILD_SCENE2WEBPAGE
+public class SceneToGlTFWiz
+#else
 public class SceneToGlTFWiz : MonoBehaviour
+#endif
 {
 	public int jpgQuality = 85;
 
@@ -114,15 +121,20 @@ public class SceneToGlTFWiz : MonoBehaviour
 
 	public void ExportCoroutine(string path, Preset presetAsset, bool buildZip, bool exportPBRMaterials, bool exportAnimation = true, bool doConvertImages = true)
 	{
-		StartCoroutine(Export(path, presetAsset, buildZip, exportPBRMaterials, exportAnimation, doConvertImages));
-	}
+#if BUILD_SCENE2WEBPAGE
+        Export(path, presetAsset, buildZip, exportPBRMaterials, exportAnimation, doConvertImages);
+#else
+        StartCoroutine(Export(path, presetAsset, buildZip, exportPBRMaterials, exportAnimation, doConvertImages));
+#endif
 
-	public int getNbSelectedObjects()
+    }
+
+    public int getNbSelectedObjects()
 	{
 		return nbSelectedObjects;
 	}
 
-	public IEnumerator Export(string path, Preset presetAsset, bool buildZip, bool exportPBRMaterials, bool exportAnimation = true, bool doConvertImages = false)
+	public bool Export(string path, Preset presetAsset, bool buildZip, bool exportPBRMaterials, bool exportAnimation = true, bool doConvertImages = false)
 	{
 		writer = new GlTF_Writer();
 		writer.Init ();
@@ -568,7 +580,7 @@ public class SceneToGlTFWiz : MonoBehaviour
 		if (GlTF_Writer.meshes.Count == 0)
 		{
 			Debug.Log("No visible objects have been exported. Aboring export");
-			yield return false;
+			return false;
 		}
 
 		writer.OpenFiles(path);
@@ -602,7 +614,7 @@ public class SceneToGlTFWiz : MonoBehaviour
 		}
 		done = true;
 
-		yield return true;
+		return true;
 	}
 
 	// Check if all the bones referenced by the skin are in the selection

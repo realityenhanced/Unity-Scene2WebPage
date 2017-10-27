@@ -69,7 +69,7 @@ public class SceneToGlTFWiz : MonoBehaviour
 			cam.zfar = tr.GetComponent<Camera>().farClipPlane;
 			cam.znear = tr.GetComponent<Camera>().nearClipPlane;
 			cam.aspect_ratio = tr.GetComponent<Camera>().aspect;
-			cam.yfov = tr.GetComponent<Camera>().fieldOfView;
+			cam.yfov = (tr.GetComponent<Camera>().fieldOfView * (float)(Math.PI)) / 180.0f;
 			cam.name = GlTF_Writer.cleanNonAlphanumeric(tr.name);
 			GlTF_Writer.cameras.Add(cam);
 		}

@@ -626,5 +626,18 @@ public class GlTF_Writer {
 			binWriter.Flush();
 		}
 	}
+
+    public static int FindCameraIndex(string cameraName)
+    {
+        for (int i=0; i<cameras.Count; ++i)
+        {
+            if (cameras[i].name == cameraName)
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
 }
 #endif

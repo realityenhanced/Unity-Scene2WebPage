@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class GlTF_Node : GlTF_Writer {
     // https://github.com/KhronosGroup/glTF/tree/master/specification/2.0#reference-node
-	public int cameraIndex;
+	public int cameraIndex = -1;
 	public bool hasParent = false;
 	public List<string> childrenNames = new List<string>();
 	public bool uniqueItems = true;

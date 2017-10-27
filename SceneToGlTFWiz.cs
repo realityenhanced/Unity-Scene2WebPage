@@ -551,7 +551,7 @@ public class SceneToGlTFWiz : MonoBehaviour
 
 			if (tr.GetComponent<Camera>() != null)
 			{
-                node.cameraIndex = GlTF_Writer.FindCameraIndex(tr.name);
+                node.cameraIndex = GlTF_Writer.FindCameraIndex(GlTF_Writer.cleanNonAlphanumeric(tr.name));
             }
 			else if (tr.GetComponent<Light>() != null)
 				node.lightName = GlTF_Writer.cleanNonAlphanumeric(tr.name);

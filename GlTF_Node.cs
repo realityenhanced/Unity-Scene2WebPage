@@ -4,7 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class GlTF_Node : GlTF_Writer {
-	public string cameraName;
+    // https://github.com/KhronosGroup/glTF/tree/master/specification/2.0#reference-node
+	public int cameraIndex;
 	public bool hasParent = false;
 	public List<string> childrenNames = new List<string>();
 	public bool uniqueItems = true;
@@ -35,11 +36,11 @@ public class GlTF_Node : GlTF_Writer {
 		Indent();
 		CommaNL();
 		jsonWriter.Write ("\"name\": \"" + id + "\"");
-		if (cameraName != null)
+		if (cameraIndex != -1)
 		{
 			CommaNL();
 			Indent();
-			jsonWriter.Write ("\"camera\": \""+cameraName+"\"");
+			jsonWriter.Write ("\"camera\": " + cameraIndex);
 		}
 		else if (lightName != null)
 		{

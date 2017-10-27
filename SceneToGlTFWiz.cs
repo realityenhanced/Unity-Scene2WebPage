@@ -168,21 +168,12 @@ public class SceneToGlTFWiz : MonoBehaviour
 		Dictionary<string, GlTF_Skin> parsedSkins = new Dictionary<string, GlTF_Skin>();
 		parsedSkins.Clear();
 
-        // first, collect objects in the scene, add to lists
-        Scene scene = SceneManager.GetActiveScene();
-        var rootGameObjects = scene.GetRootGameObjects();
-        List<Transform> trs = new List<Transform>();
-
-        // Create a temporary root object to hold the root objects of the current scene.
-        foreach (GameObject go in rootGameObjects)
-        {
-            var currentTransform = go.transform;
-            trs.AddRange(currentTransform.GetComponentsInChildren<Transform>());
-        }
-
-        // Prefilter selected nodes and look for skinning in order to list "bones" nodes
-        //FIXME: improve this
-        List<Transform> bones = new List<Transform>();
+		// first, collect objects in the scene, add to lists
+		Transform[] transforms = Selection.GetTransforms (SelectionMode.Deep);
+		List<Transform> trs = new List<Transform>(transforms);
+		// Prefilter selected nodes and look for skinning in order to list "bones" nodes
+		//FIXME: improve this
+		List<Transform> bones = new List<Transform>();
 		foreach(Transform tr in trs)
 		{
 			if (!tr.gameObject.activeSelf)
@@ -551,8 +542,8 @@ public class SceneToGlTFWiz : MonoBehaviour
 
 			if (tr.GetComponent<Camera>() != null)
 			{
-                node.cameraIndex = GlTF_Writer.FindCameraIndex(tr.name);
-            }
+				node.cameraName = GlTF_Writer.cleanNonAlphanumeric(tr.name);
+			}
 			else if (tr.GetComponent<Light>() != null)
 				node.lightName = GlTF_Writer.cleanNonAlphanumeric(tr.name);
 

@@ -12,7 +12,6 @@ public class GlTF_Light : GlTF_Writer {
         Indent(); jsonWriter.Write("\"type\": \"" + type + "\""); CommaNL(); CommaNL();
         color.Write();
         IndentOut();
-        jsonWriter.Write("\n");
     }
 }
 #endif

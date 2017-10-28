@@ -432,54 +432,78 @@ public class GlTF_Writer {
             CommaNL();
             Indent(); jsonWriter.Write("\"extensions\": {\n");
             IndentIn();
-            Indent(); jsonWriter.Write("\"KHR_Lights\": {\n");
+            Indent(); jsonWriter.Write("\"KHR_lights\": {\n");
             IndentIn();
             Indent(); jsonWriter.Write("\"lights\": [\n");
 
             IndentIn();
-            foreach (GlTF_Light l in lights)
+            for (int lightIndex = 0; lightIndex<lights.Count; ++lightIndex)
             {
-                CommaNL();
-                IndentIn();
-                l.Write();
-                IndentOut();
-            }
-            IndentOut();
+                if (lightIndex != 0)
+                {
+                    jsonWriter.Write(",\n");
+                }
 
-            jsonWriter.WriteLine();
+                lights[lightIndex].Write();
+            }
+            jsonWriter.Write("\n");
             IndentOut();
             Indent(); jsonWriter.Write("]\n");
             IndentOut();
             Indent(); jsonWriter.Write("}\n");
             IndentOut();
-            Indent(); jsonWriter.Write("}\n");
+            Indent(); jsonWriter.Write("}");
         }
 
+        List<string> requiredExtensions = new List<string>();
         if (hasSpecularMaterials)
+        {
+            requiredExtensions.Add("KHR_materials_pbrSpecularGlossiness");
+        }
+        if (lights.Count > 0)
+        {
+            requiredExtensions.Add("KHR_lights");
+        }
+
+        if (requiredExtensions.Count > 0)
 		{
 			CommaNL();
 			Indent(); jsonWriter.Write("\"extensionsRequired\": [\n");
 			IndentIn();
-			Indent(); jsonWriter.Write("\"KHR_materials_pbrSpecularGlossiness,\"\n");
-            Indent(); jsonWriter.Write("\"KHR_lights\"\n");
+            Indent();
+            for (var i = 0;i <requiredExtensions.Count; ++i)
+            {
+                if (i != 0)
+                {
+                    jsonWriter.Write(", ");
+                }
+                jsonWriter.Write("\"" + requiredExtensions[i] + "\"");
+            }
+            jsonWriter.Write("\n");
             IndentOut();
 			Indent(); jsonWriter.Write("]");
 		}
 
-		if(hasSpecularMaterials || binary)
+        if (binary)
+        {
+            requiredExtensions.Add("KHR_binary_glTF");
+        }
+		if(requiredExtensions.Count > 0)
 		{
 			CommaNL();
 			Indent(); jsonWriter.Write("\"extensionsUsed\": [\n");
 			IndentIn();
-			if (hasSpecularMaterials)
-			{
-				Indent(); jsonWriter.Write("\"KHR_materials_pbrSpecularGlossiness\"\n");
-			}
-			if (binary)
-			{
-				Indent(); jsonWriter.Write("\"KHR_binary_glTF\"\n");
-			}
-			IndentOut();
+            Indent();
+            for (var i = 0; i < requiredExtensions.Count; ++i)
+            {
+                if (i != 0)
+                {
+                    jsonWriter.Write(", ");
+                }
+                jsonWriter.Write("\"" + requiredExtensions[i] + "\"");
+            }
+            jsonWriter.Write("\n");
+            IndentOut();
 			Indent(); jsonWriter.Write("]");
 		}
 

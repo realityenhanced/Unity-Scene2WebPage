@@ -13,18 +13,18 @@ public class GlTF_PointLight : GlTF_Light {
 	{
         Indent(); jsonWriter.Write("{\n");
         WriteColorAndType();
-        CommaNL();
+        jsonWriter.Write(",\n");
         IndentIn();
-        Indent(); jsonWriter.Write("\"positional\": [\n");
+        Indent(); jsonWriter.Write("\"positional\": {\n");
         IndentIn();
-        Indent(); jsonWriter.Write("\"constantAttentuation\": " + constantAttenuation); CommaNL();
-        Indent(); jsonWriter.Write("\"linearAttenuation\": " + linearAttenuation); CommaNL();
-        Indent(); jsonWriter.Write("\"quadraticAttenuation\": " + quadraticAttenuation);
-        Indent(); jsonWriter.Write("]\n");
+        Indent(); jsonWriter.Write("\"constantAttentuation\": " + constantAttenuation); jsonWriter.Write(",\n");
+        Indent(); jsonWriter.Write("\"linearAttenuation\": " + linearAttenuation); jsonWriter.Write(",\n");
+        Indent(); jsonWriter.Write("\"quadraticAttenuation\": " + quadraticAttenuation); jsonWriter.Write("\n");
         IndentOut();
+        Indent(); jsonWriter.Write("}\n");
         IndentOut();
 
-        Indent(); jsonWriter.Write("}\n");
+        Indent(); jsonWriter.Write("}");
 
     }
 }

@@ -14,25 +14,27 @@ public class GlTF_SpotLight : GlTF_Light {
 	public override void Write()
 	{
         Indent(); jsonWriter.Write("{\n");
+
         WriteColorAndType();
-        CommaNL();
+
+        jsonWriter.Write(",\n");
         IndentIn();
-        Indent(); jsonWriter.Write("\"positional\": [");
+        Indent(); jsonWriter.Write("\"positional\": {\n");
         IndentIn();
-        Indent(); jsonWriter.Write ("\"constantAttentuation\": "+constantAttenuation); CommaNL();
-        Indent(); jsonWriter.Write("\"linearAttenuation\": " + linearAttenuation); CommaNL();
-        Indent(); jsonWriter.Write("\"quadraticAttenuation\": " + quadraticAttenuation);
-        Indent(); jsonWriter.Write("\"spot\": [");
+        Indent(); jsonWriter.Write ("\"constantAttentuation\": "+constantAttenuation); jsonWriter.Write(",\n");
+        Indent(); jsonWriter.Write("\"linearAttenuation\": " + linearAttenuation); jsonWriter.Write(",\n");
+        Indent(); jsonWriter.Write("\"quadraticAttenuation\": " + quadraticAttenuation); jsonWriter.Write(",\n");
+        Indent(); jsonWriter.Write("\"spot\": {\n");
         IndentIn();
-        Indent(); jsonWriter.Write ("\"fallOffAngle\": "+fallOffAngle);CommaNL();
-        Indent(); jsonWriter.Write ("\"fallOffExponent\": "+fallOffExponent);
-        Indent(); jsonWriter.Write("]"); CommaNL();
+        Indent(); jsonWriter.Write ("\"fallOffAngle\": "+fallOffAngle); jsonWriter.Write(",\n");
+        Indent(); jsonWriter.Write ("\"fallOffExponent\": "+fallOffExponent); jsonWriter.Write("\n");
         IndentOut();
+        Indent(); jsonWriter.Write("}\n");
         IndentOut();
-        Indent(); jsonWriter.Write("]");
+        Indent(); jsonWriter.Write("}\n");
         IndentOut();
 
-        Indent(); jsonWriter.Write("}\n");
+        Indent(); jsonWriter.Write("}");
     }
 }
 #endif

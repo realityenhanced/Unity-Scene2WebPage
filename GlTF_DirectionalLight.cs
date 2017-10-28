@@ -8,7 +8,8 @@ public class GlTF_DirectionalLight : GlTF_Light {
 	{
         Indent(); jsonWriter.Write("{\n");
         WriteColorAndType();
-        Indent(); jsonWriter.Write("}\n");
+        jsonWriter.Write("\n");
+        Indent(); jsonWriter.Write("}");
     }
 }
 #endif

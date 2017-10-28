@@ -8,9 +8,12 @@ public class GlTF_Node : GlTF_Writer {
 	public int cameraIndex = -1;
 	public bool hasParent = false;
 	public List<string> childrenNames = new List<string>();
-	public bool uniqueItems = true;
-	public string lightName;
-	public List<string>bufferViewNames = new List<string>();
+    public bool uniqueItems = true;
+
+    // https://github.com/UX3D-nopper/glTF/tree/master_lights_blinnphong/extensions/Khronos/KHR_lights
+	public int lightIndex = -1;
+
+    public List<string>bufferViewNames = new List<string>();
 	public List<string>indexNames = new List<string>();
 	public List<string>accessorNames = new List<string>();
 	public int meshIndex = -1;
@@ -42,12 +45,14 @@ public class GlTF_Node : GlTF_Writer {
 			Indent();
 			jsonWriter.Write ("\"camera\": " + cameraIndex);
 		}
-		else if (lightName != null)
+		else if (lightIndex != -1)
 		{
 			CommaNL();
 			Indent();
-			jsonWriter.Write ("\"light\": \""+lightName+"\"");
-		}
+            jsonWriter.Write("\"extensions\" : { \"KHR_lights\" : { ");
+            jsonWriter.Write ("\"light\":" + lightIndex);
+            jsonWriter.Write(" } }");
+        }
 		else if (meshIndex != -1)
 		{
 			CommaNL();

@@ -85,36 +85,42 @@ public class SceneToGlTFWiz : MonoBehaviour
 		done = false;
 	}
 
-	public static void parseUnityLight(Transform tr)
+    // Based on https://github.com/UX3D-nopper/glTF/tree/master_lights_blinnphong/extensions/Khronos/KHR_lights
+    public static void parseUnityLight(Transform tr)
 	{
-		switch (tr.GetComponent<Light>().type)
+        var light = tr.GetComponent<Light>();
+        var lightColor = light.color * light.intensity;
+        switch (light.type)
 		{
 			case LightType.Point:
 				GlTF_PointLight pl = new GlTF_PointLight();
-				pl.color = new GlTF_ColorRGB(tr.GetComponent<Light>().color);
+				pl.color = new GlTF_ColorRGB(lightColor);
 				pl.name = GlTF_Writer.cleanNonAlphanumeric(tr.name);
-				GlTF_Writer.lights.Add(pl);
+
+                // FIX ME: https://forum.unity.com/threads/light-attentuation-equation.16006/
+                pl.quadraticAttenuation = light.range;
+
+                GlTF_Writer.lights.Add(pl);
 				break;
 
 			case LightType.Spot:
 				GlTF_SpotLight sl = new GlTF_SpotLight();
-				sl.color = new GlTF_ColorRGB(tr.GetComponent<Light>().color);
+				sl.color = new GlTF_ColorRGB(lightColor);
 				sl.name = GlTF_Writer.cleanNonAlphanumeric(tr.name);
-				GlTF_Writer.lights.Add(sl);
+
+                // FIX ME: https://forum.unity.com/threads/light-attentuation-equation.16006/
+                sl.linearAttenuation = light.range;
+                sl.fallOffAngle = light.spotAngle;
+                sl.fallOffExponent = 0.0f;
+
+                GlTF_Writer.lights.Add(sl);
 				break;
 
 			case LightType.Directional:
 				GlTF_DirectionalLight dl = new GlTF_DirectionalLight();
-				dl.color = new GlTF_ColorRGB(tr.GetComponent<Light>().color);
+				dl.color = new GlTF_ColorRGB(lightColor);
 				dl.name = GlTF_Writer.cleanNonAlphanumeric(tr.name);
 				GlTF_Writer.lights.Add(dl);
-				break;
-
-			case LightType.Area:
-				GlTF_AmbientLight al = new GlTF_AmbientLight();
-				al.color = new GlTF_ColorRGB(tr.GetComponent<Light>().color);
-				al.name = GlTF_Writer.cleanNonAlphanumeric(tr.name);
-				GlTF_Writer.lights.Add(al);
 				break;
 		}
 	}
@@ -549,12 +555,15 @@ public class SceneToGlTFWiz : MonoBehaviour
 			if(!node.hasParent)
 				correctionNode.childrenNames.Add(node.id);
 
-			if (tr.GetComponent<Camera>() != null)
-			{
+            if (tr.GetComponent<Camera>() != null)
+            {
                 node.cameraIndex = GlTF_Writer.FindCameraIndex(GlTF_Writer.cleanNonAlphanumeric(tr.name));
             }
-			else if (tr.GetComponent<Light>() != null)
-				node.lightName = GlTF_Writer.cleanNonAlphanumeric(tr.name);
+            else if (tr.GetComponent<Light>() != null)
+            {
+                // The last added light will map to the current node's light.
+                node.lightIndex = GlTF_Writer.lights.Count - 1;
+            }
 
 			// Parse node's skin data
 			GlTF_Accessor invBindMatrixAccessor = null;
@@ -593,8 +602,14 @@ public class SceneToGlTFWiz : MonoBehaviour
 		}
 
 		writer.OpenFiles(path);
-		writer.Write ();
-		writer.CloseFiles();
+        try
+        {
+            writer.Write();
+        }
+        finally
+        {
+            writer.CloseFiles();
+        }
 
 		if(nbDisabledObjects > 0)
 			Debug.Log(nbDisabledObjects + " disabled object ignored during export");

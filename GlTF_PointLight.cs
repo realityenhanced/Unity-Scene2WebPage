@@ -11,11 +11,21 @@ public class GlTF_PointLight : GlTF_Light {
 
 	public override void Write()
 	{
-		color.Write();
-		Indent();		jsonWriter.Write ("\"constantAttentuation\": "+constantAttenuation);
-		Indent();		jsonWriter.Write ("\"linearAttenuation\": "+linearAttenuation);
-		Indent();		jsonWriter.Write ("\"quadraticAttenuation\": "+quadraticAttenuation);
-		jsonWriter.Write ("}");
-	}
+        Indent(); jsonWriter.Write("{\n");
+        WriteColorAndType();
+        CommaNL();
+        IndentIn();
+        Indent(); jsonWriter.Write("\"positional\": [\n");
+        IndentIn();
+        Indent(); jsonWriter.Write("\"constantAttentuation\": " + constantAttenuation); CommaNL();
+        Indent(); jsonWriter.Write("\"linearAttenuation\": " + linearAttenuation); CommaNL();
+        Indent(); jsonWriter.Write("\"quadraticAttenuation\": " + quadraticAttenuation);
+        Indent(); jsonWriter.Write("]\n");
+        IndentOut();
+        IndentOut();
+
+        Indent(); jsonWriter.Write("}\n");
+
+    }
 }
 #endif

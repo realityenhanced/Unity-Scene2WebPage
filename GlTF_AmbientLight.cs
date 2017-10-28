@@ -3,9 +3,12 @@ using UnityEngine;
 using System.Collections;
 
 public class GlTF_AmbientLight : GlTF_Light {
-	public override void Write()
+    public GlTF_AmbientLight() { type = "ambient"; }
+    public override void Write()
 	{
-		color.Write();
-	}
+        Indent(); jsonWriter.Write("{\n");
+        WriteColorAndType();
+        Indent(); jsonWriter.Write("}\n");
+    }
 }
 #endif

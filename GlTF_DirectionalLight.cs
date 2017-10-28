@@ -3,9 +3,12 @@ using UnityEngine;
 using System.Collections;
 
 public class GlTF_DirectionalLight : GlTF_Light {
-	public override void Write()
+    public GlTF_DirectionalLight() { type = "directional"; }
+    public override void Write()
 	{
-		color.Write();
-	}
+        Indent(); jsonWriter.Write("{\n");
+        WriteColorAndType();
+        Indent(); jsonWriter.Write("}\n");
+    }
 }
 #endif

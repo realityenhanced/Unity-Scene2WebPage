@@ -137,7 +137,12 @@ public class GlTF_Writer {
 		mat4BufferView = new GlTF_BufferView("mat4BufferView", 64);
 		bufferViews = new List<GlTF_BufferView>();
 		cameras = new List<GlTF_Camera>();
+
 		lights = new List<GlTF_Light>();
+        var ambientLight = new GlTF_AmbientLight();
+        ambientLight.color = new GlTF_ColorRGB(RenderSettings.ambientLight * RenderSettings.ambientIntensity);
+        lights.Add(ambientLight);
+
 		meshes = new List<GlTF_Mesh>();
 		accessors = new List<GlTF_Accessor>();
 
@@ -420,13 +425,44 @@ public class GlTF_Writer {
 			Indent();		jsonWriter.Write ("]");
 		}
 
-		if(hasSpecularMaterials)
+        // KHR_Lights extension
+        // https://github.com/UX3D-nopper/glTF/tree/master_lights_blinnphong/extensions/Khronos/KHR_lights
+        if (lights != null && lights.Count > 0)
+        {
+            CommaNL();
+            Indent(); jsonWriter.Write("\"extensions\": {\n");
+            IndentIn();
+            Indent(); jsonWriter.Write("\"KHR_Lights\": {\n");
+            IndentIn();
+            Indent(); jsonWriter.Write("\"lights\": [\n");
+
+            IndentIn();
+            foreach (GlTF_Light l in lights)
+            {
+                CommaNL();
+                IndentIn();
+                l.Write();
+                IndentOut();
+            }
+            IndentOut();
+
+            jsonWriter.WriteLine();
+            IndentOut();
+            Indent(); jsonWriter.Write("]\n");
+            IndentOut();
+            Indent(); jsonWriter.Write("}\n");
+            IndentOut();
+            Indent(); jsonWriter.Write("}\n");
+        }
+
+        if (hasSpecularMaterials)
 		{
 			CommaNL();
 			Indent(); jsonWriter.Write("\"extensionsRequired\": [\n");
 			IndentIn();
-			Indent(); jsonWriter.Write("\"KHR_materials_pbrSpecularGlossiness\"\n");
-			IndentOut();
+			Indent(); jsonWriter.Write("\"KHR_materials_pbrSpecularGlossiness,\"\n");
+            Indent(); jsonWriter.Write("\"KHR_lights\"\n");
+            IndentOut();
 			Indent(); jsonWriter.Write("]");
 		}
 

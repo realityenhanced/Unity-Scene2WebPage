@@ -10,7 +10,7 @@ public class GlTF_ColorRGB : GlTF_Writer {
 	public override void Write ()
 	{
 		Indent();
-		if (name.Length > 0)
+		if (name != null && name.Length > 0)
 			jsonWriter.Write ("\"" + name + "\": ");
 		else
 			jsonWriter.Write ("\"color\": [");

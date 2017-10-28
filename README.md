@@ -1,36 +1,22 @@
-# Unity to Sketchfab exporter
+# Unity Scene to Webpage exporter
 
-Unity editor wizard that exports Unity object to Sketchfab using **glTF 2.0** format.
+Unity editor wizard that exports a  Unity Scene to a web page using **glTF 2.0** format.
 
-Plugin based on Unity-glTF-Exporter from https://github.com/tparisi/Unity-glTF-Exporter
+Plugin based on Unity-glTF-Exporter from https://github.com/tparisi/Unity-glTF-Exporter & https://github.com/sketchfab/Unity-glTF-Exporter
 
 ## How to use it
 
-Once the plugin is imported (from the Unity package provided in [the last release here](https://github.com/sketchfab/Unity-glTF-Exporter/releases), or after having checked out this repo),
-a new item should appear in the *Tools* menu. You can access the exporter by going through **Tools/Publish to Sketchfab** as shown in the following screenshot:
-
-
-![alt tag](https://github.com/sketchfab/Unity-glTF-Exporter/blob/feature/gltf-update-2-0_D3D-2812/Resources/dropdown_menu.JPG)
-
-
-The exporter uses OAuth authentication with *username/password* workflow.
-You need to log in with your Sketchfab account before continuing.
-If you don't have a Sketchfab account, you can click on the helpers to be redirected to the [sign up page](https://sketchfab.com/signup).
-
-When successfuly logged in, you will be able to use the exporter.
-Select the objects you want to export, fill the forms with model info and then click the upload button.
-The exporter will pack up everything and upload it on Sketchfab. You will be redirected to the model page when it's done.
-
-If you have any issue, please use the [Report an issue](https://help.sketchfab.com/hc/en-us/requests/new?type=exporters&subject=Unity+Exporter) link to be redirected to the support form.
+Once the plugin is imported a new item should appear in the *Tools* menu. You can access the exporter by going through **Tools/Convert Scene to Web page**
 
 Supported Unity objects and features so far:
 - Scene objects such as transforms and meshes
 - PBR materials (both *Standard* and *Standard (Specular setup)* for metal/smoothness and specular/smoothness respectively). Other materials may also be exported but not with all their channels.
 - Solid and skinning animation (note that custom scripts or *humanoid* skeletal animation are not exported yet).
+- Lights (In Progress: Basic support available via KHR_Lights extension)
 
 *(Note that animation is still in beta)*
 
-Please note that camera, lights, custom scripts, shaders and post processes are not exported.
+Please note that custom scripts, shaders and post processes are not exported.
 
 ## Features
 * [PBR Materials](#pbrmaterials)
@@ -156,16 +142,6 @@ The exporter applies this operation on all the exported textures.
 
 Moreover, Unity uses smoothness and not roughness, so **alpha channel is inverted** for RGBA Metallic/Smoothness textures, also to match glTF specification.
 
-
-<a name="samples"></a>
-## Samples
-
-Some samples exported using this plugin are available (and downloadable) on Sketchfab https://sketchfab.com/features/gltf.
-They will be kept up-to-date while the glTF 2.0 specification is being developped.
-
 <a name="note"></a>
 ## Important notes
-
-Please note that for now, output glTF files **may not be 100% compliant** with the current state of glTF 2.0 (as mentionned above with bump maps).
-
-This plugin is being updated with glTF file format. Since updates can contain breaking changes causing issues with Sketchfab glTF processing (also updated), it's strongly recommended to use the latest version.
+Please note that for now, output glTF files **may not be 100% compliant** with the current state of glTF 2.0 (as mentioned above with bump maps).

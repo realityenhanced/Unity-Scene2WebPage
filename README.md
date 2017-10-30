@@ -1,5 +1,6 @@
 # Unity Scene to Webpage exporter
 
+(A Work In Progress)
 Unity editor wizard that exports a  Unity Scene to a web page using **glTF 2.0** format.
 
 Plugin based on Unity-glTF-Exporter from https://github.com/tparisi/Unity-glTF-Exporter & https://github.com/sketchfab/Unity-glTF-Exporter

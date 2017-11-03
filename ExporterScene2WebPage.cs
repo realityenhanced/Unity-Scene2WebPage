@@ -20,6 +20,9 @@ public class ExporterScene2WebPage : EditorWindow {
         var exporter = new SceneToGlTFWiz();
         exporter.Export(exportPath, null, /*buildzip*/ false, true, true, true);
 
+        FileUtil.DeleteFileOrDirectory(Application.temporaryCachePath + "/default.html");
+        FileUtil.DeleteFileOrDirectory(Application.temporaryCachePath + "/GLTFLoader.js");
+
         var filesPath = "Assets/Editor/Unity-Scene2WebPage/Resources/";
         bool haveFilesBeenCopied = false;
         try

@@ -20,6 +20,30 @@ public class ExporterScene2WebPage : EditorWindow {
         var exporter = new SceneToGlTFWiz();
         exporter.Export(exportPath, null, /*buildzip*/ false, true, true, true);
 
+        var filesPath = "Assets/Editor/Scene2WebPage/Resources/";
+        bool haveFilesBeenCopied = false;
+        try
+        {
+            FileUtil.CopyFileOrDirectory(filesPath + "default.html", Application.temporaryCachePath + "/default.html");
+
+            // The JS extension has special significance in Unity. Storing the JS file as TXT and renaming it while copying it over to the target folder.
+            FileUtil.CopyFileOrDirectory(filesPath + "GLTFLoaderjs.txt", Application.temporaryCachePath + "/GLTFLoader.js");
+
+            haveFilesBeenCopied = true;
+        }
+        catch
+        {
+            haveFilesBeenCopied = false;
+            Debug.LogError("Please make sure the Scene2WebPage is under the Assets/Editor folder!");
+        }
+
+        if (haveFilesBeenCopied)
+        {
+            Application.OpenURL("file:///" + Application.temporaryCachePath + "/default.html");
+
+            // Wait for some time for the Web page to load before opening the folder.
+            System.Threading.Thread.Sleep(1000);
+        }
         ShowExplorer(exportPath);
 #else // and error dialog if not standalone
 		EditorUtility.DisplayDialog("Error", "Your build target must be set to standalone", "Okay");

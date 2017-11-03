@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, user-scalable=0, initial-scale=1, maximum-scale=1, minimum-scale=1" />
+    <style>
+        html, body {
+            background: none;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            margin: 0
+        }
+
+        .background {
+            z-index: -1;
+        }
+    </style>
+    <title>Hello World : Unity-Scene2WebPage</title>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/87/three.min.js"></script>
+    <script src="GLTFLoader.js"></script>
+    <script>
+        (function () {
+            "use strict";
+
+            let g_scene = new THREE.Scene();
+            let g_camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            let g_renderer = new THREE.WebGLRenderer({ antialias: true });
+            let g_animationMixer = null;
+            let g_clock = null;
+
+            g_renderer.setSize(window.innerWidth, window.innerHeight);
+            g_renderer.domElement.className = "background";
+            document.body.appendChild(g_renderer.domElement);
+
+            let loader = new THREE.GLTFLoader();
+            loader.load('UnityScene2Webpage.gltf',
+                (data) => {
+                    if (data.scene) {
+                        g_scene = data.scene;
+
+                        if (data.cameras.length) {
+                            g_camera = data.cameras[0];
+                            g_camera.aspect = window.innerWidth / window.innerHeight;
+                            g_camera.updateProjectionMatrix();
+                        }
+
+                        let animations = data.animations;
+                        if (animations && animations.length) {
+                            g_clock = new THREE.Clock();
+                            g_animationMixer = new THREE.AnimationMixer(g_scene);
+
+                            for (let i = 0; i < animations.length; i++) {
+                                let animation = animations[i];
+                                g_animationMixer.clipAction(animation).play();
+                            }
+                        }
+                    }
+                },
+                (xhr) => {
+                },
+                () => {
+                    console.log('unable to load gltf');
+                }
+            );
+
+            function onPageLoad() {
+                // Touch handler to prevent elastic scroll on ipad/android
+                document.body.addEventListener('touchmove', function (event) {
+                    event.preventDefault();
+                    return false;
+                }, false);
+
+                window.onresize = resizeCanvas;
+                resizeCanvas();
+
+                animate();
+            }
+
+            function animate() {
+                requestAnimationFrame(animate);
+                render();
+            }
+
+            function render() {
+                if (g_animationMixer) {
+                    g_animationMixer.update(g_clock.getDelta());
+                }
+                g_renderer.render(g_scene, g_camera);
+            }
+
+            function resizeCanvas() {
+                g_renderer.setSize(window.innerWidth, window.innerHeight);
+                g_camera.aspect = window.innerWidth / window.innerHeight;
+                g_camera.updateProjectionMatrix();
+            }
+
+            onPageLoad();
+        })();
+    </script>
+</body>
+</html>

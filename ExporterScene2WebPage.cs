@@ -20,7 +20,7 @@ public class ExporterScene2WebPage : EditorWindow {
         var exporter = new SceneToGlTFWiz();
         exporter.Export(exportPath, null, /*buildzip*/ false, true, true, true);
 
-        var filesPath = "Assets/Editor/Scene2WebPage/Resources/";
+        var filesPath = "Assets/Editor/Unity-Scene2WebPage/Resources/";
         bool haveFilesBeenCopied = false;
         try
         {
@@ -34,7 +34,7 @@ public class ExporterScene2WebPage : EditorWindow {
         catch
         {
             haveFilesBeenCopied = false;
-            Debug.LogError("Please make sure the Scene2WebPage is under the Assets/Editor folder!");
+            Debug.LogError("Please make sure the Unity-Scene2WebPage plugin folder is under the Assets/Editor folder!");
         }
 
         if (haveFilesBeenCopied)

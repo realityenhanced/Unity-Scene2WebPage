@@ -6,6 +6,7 @@ Unity editor wizard that exports a  Unity Scene to a web page using the **glTF 2
 Plugin based on Unity-glTF-Exporter from https://github.com/tparisi/Unity-glTF-Exporter & https://github.com/sketchfab/Unity-glTF-Exporter
 
 ## How to use it
+Video @ https://youtu.be/kHxErX1yYVM
 - Copy the Unity-Scene2WebPage folder to your Assets/Editor folder. (The folder location and name are important)
 - Once the plugin is imported a new item should appear in the *Tools* menu. You can access the exporter by going through **Tools/Convert Scene to Web page**
 - Clicking on it, will launch the browser with the page.

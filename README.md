@@ -1,13 +1,17 @@
 # Unity Scene to Webpage exporter
 
 (A Work In Progress)
-Unity editor wizard that exports a  Unity Scene to a web page using **glTF 2.0** format.
+Unity editor wizard that exports a  Unity Scene to a web page using the **glTF 2.0** format and **three.js** to load it.
 
 Plugin based on Unity-glTF-Exporter from https://github.com/tparisi/Unity-glTF-Exporter & https://github.com/sketchfab/Unity-glTF-Exporter
 
 ## How to use it
+- Copy the Unity-Scene2WebPage folder to your Assets/Editor folder. (The folder location and name are important)
+- Once the plugin is imported a new item should appear in the *Tools* menu. You can access the exporter by going through **Tools/Convert Scene to Web page**
+- Clicking on it, will launch the browser with the page.
 
-Once the plugin is imported a new item should appear in the *Tools* menu. You can access the exporter by going through **Tools/Convert Scene to Web page**
+## CREDITS
+"Low Poly Earth" model (https://www.blendswap.com/blends/view/86599) by CraigForster (https://www.blendswap.com/user/CraigForster) released under CC-0 license.
 
 Supported Unity objects and features so far:
 - Scene objects such as transforms and meshes
